@@ -1,0 +1,86 @@
+#! /usr/bin/env bash
+
+set -e
+
+runtime_env_src="$PROJECT_DIR/etc/collect_twitter_stream_by_location.env.source"
+python_env=$(which python)
+
+
+if [ -e "$runtime_env_src" ]; then
+   source "$runtime_env_src"
+fi
+
+if [ -z "$TWITTER_API_CONSUMER_KEY" ]; then
+   echo "Error: Expected environment variable TWITTER_API_CONSUMER_KEY not defined."
+   exit 1
+fi
+
+if [ -z "$TWITTER_API_CONSUMER_SECRET" ]; then
+   echo "Error: Expected environment variable TWITTER_API_CONSUMER_SECRET not defined."
+   exit 1
+fi
+
+if [ -z "$TWITTER_API_ACCESS_TOKEN" ]; then
+   echo "Error: Expected environment variable TWITTER_API_ACCESS_TOKEN not defined."
+   exit 1
+fi
+
+if [ -z "$TWITTER_API_ACCESS_TOKEN_SECRET" ]; then
+   echo "Error: Expected environment variable TWITTER_API_ACCESS_TOKEN_SECRET not defined."
+   exit 1
+fi
+
+if [ -z "$AWS_API_ACCESS_KEY" ]; then
+   echo "Error: Expected environment variable AWS_API_ACCESS_KEY not defined."
+   exit 1
+fi
+
+if [ -z "$AWS_API_SECRET_ACCESS_KEY" ]; then
+   echo "Error: Expected environment variable AWS_API_SECRET_ACCESS_KEY not defined."
+   exit 1
+fi
+
+if [ -z "$AWS_API_REGION_NAME" ]; then
+   echo "Error: Expected environment variable AWS_API_REGION_NAME not defined."
+   exit 1
+fi
+
+if [ -z "$AWS_FIREHOSE_DELIVERY_STREAM_NAME" ]; then
+   echo "Error: Expected environment variable AWS_FIREHOSE_DELIVERY_STREAM_NAME not defined."
+   exit 1
+fi
+
+if [ -z "$TWITTER_STREAM_BY_LOCATION" ]; then
+   echo "Error: Expected environment variable TWITTER_STREAM_BY_LOCATION not defined."
+   exit 1
+fi
+
+if [ -z "$LOGGER_HOST" ]; then
+   LOGGER_HOST=127.0.0.1
+fi
+
+if [ -z "$LOGGER_PORT" ]; then
+   LOGGER_PORT=24224
+fi
+
+if [ -n "$PRODUCTION_MODE" ]; then
+   if [ "$PRODUCTION_MODE" = 'True' ]; then
+      PRODUCTION_MODE=--production
+   else
+      PRODUCTION_MODE=''
+   fi
+fi
+
+exec $python_env $PROJECT_DIR/bin/collect_twitter_stream_by_location.py \
+     -twitter_api_consumer_key $TWITTER_API_CONSUMER_KEY \
+     -twitter_api_consumer_secret $TWITTER_API_CONSUMER_SECRET \
+     -twitter_api_access_token $TWITTER_API_ACCESS_TOKEN \
+     -twitter_api_access_token_secret $TWITTER_API_ACCESS_TOKEN_SECRET \
+     -aws_api_access_key $AWS_API_ACCESS_KEY \
+     -aws_api_secret_access_key $AWS_API_SECRET_ACCESS_KEY \
+     -aws_api_region_name $AWS_API_REGION_NAME \
+     -aws_firehose_delivery_stream_name $AWS_FIREHOSE_DELIVERY_STREAM_NAME \
+     -twitter_stream_by_location $TWITTER_STREAM_BY_LOCATION \
+     --logger_host $LOGGER_HOST \
+     --logger_port $LOGGER_PORT \
+     $PRODUCTION_MODE

@@ -1,0 +1,7 @@
+[program:collect_twitter_stream_by_location]
+command=bash -c "(source venv/bin/activate && source etc/collect_twitter_stream_by_location.env.source && exec env-run.collect_twitter_stream_by_location)"
+startretries=9999
+priority=1
+killasgroup=true
+redirect_stderr=true
+autorestart=true
