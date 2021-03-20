@@ -14,7 +14,7 @@ haversine==0.4.5
 idna==2.8
 isort==4.3.21
 itsdangerous==0.24
-Jinja2==2.8
+Jinja2==2.11.3
 jmespath==0.9.4
 lazy-object-proxy==1.4.1
 MarkupSafe==0.23
